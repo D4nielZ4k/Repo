@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/task")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class TaskController {
 
     private final DbService service;
@@ -45,7 +46,8 @@ public class TaskController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "removeTask")
-    public void removeTask(@RequestParam Long taskId)  throws TaskNotFoundException{
-       service.removeTask(taskId);
+    public void removeTask(@RequestParam Long taskId)  {
+        service.removeTask(taskId);
     }
+
 }
