@@ -6,7 +6,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class TaskApplication  extends SpringBootServletInitializer {
+public class TaskApplication {
 
 	public static void main(String[] args) {
 
