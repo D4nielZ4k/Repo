@@ -34,12 +34,12 @@ public class TrelloService {
                         null
                 )));
 
-    //   emailService.send(new Mail(
-    //           adminConfig.getAdminMail(),
-    //           SUBJECT,
-    //           "new card " + trelloCardDto.getName() + " has been created on your Trello account",
-    //           null
-    //   ));
+       emailService.send(new Mail(
+               adminConfig.getAdminMail(),
+               SUBJECT,
+               "new card " + trelloCardDto.getName() + " has been created on your Trello account",
+               null
+       ));
 //
         return newCard;
     }
