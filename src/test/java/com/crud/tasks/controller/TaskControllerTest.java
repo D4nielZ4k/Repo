@@ -56,6 +56,7 @@ public class TaskControllerTest {
         //Given
         Task task = new Task(1L, "Test", "Test");
         TaskDto taskDto = new TaskDto(1L, "Test", "Test");
+        //  when(taskMapper.mapToTask(ArgumentMatchers.any(TaskDto.class))).thenReturn(task);
         when(service.saveTask(taskMapper.mapToTask(taskDto))).thenReturn(task);
         Gson gson = new Gson();
         String jsonContent = gson.toJson(taskDto);
@@ -67,25 +68,21 @@ public class TaskControllerTest {
                         .characterEncoding("UTF-8")
                         .content(jsonContent))
                 .andExpect(status().is(200));
-        //  No value at JSON path
-        //    .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is("Test")))
-        //    .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("Test")))
-        //    .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("Test")));
 
     }
 
-    //400 ??????????
+
     @Test
     void shouldFetchTask() throws Exception {
         //Given
         TaskDto taskDto = new TaskDto(1L, "Test", "Test content");
         Task task = new Task(1L, "Test", "Test content");
-
+        when(taskMapper.mapToTaskDto(task)).thenReturn(taskDto);
         when(service.getTask(taskDto.getId())).thenReturn(Optional.of(task));
         //Then & When
         mockMvc
                 .perform(MockMvcRequestBuilders
-                        .get("/v1/task/getTask")
+                        .get("/v1/task/getTask").param("taskId", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
@@ -95,10 +92,12 @@ public class TaskControllerTest {
     }
 
     @Test
-     void shouldUpdateTask() throws Exception {
+    void shouldUpdateTask() throws Exception {
         //Given
         TaskDto taskDto = new TaskDto(1L, "Test", "Test content");
         Task task = new Task(1L, "Test", "Test content");
+        when(taskMapper.mapToTaskDto(ArgumentMatchers.any(Task.class))).thenReturn(taskDto);
+        when(taskMapper.mapToTask(ArgumentMatchers.any(TaskDto.class))).thenReturn(task);
         when(service.saveTask(ArgumentMatchers.any(Task.class))).thenReturn(task);
 
         Gson gson = new Gson();
@@ -110,25 +109,25 @@ public class TaskControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .content(jsonContent))
-                .andExpect(status().is(200));
-            //   .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("Test")))
-            //   .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
-            //   .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("Test content")));
+                .andExpect(status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("Test")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("Test content")));
     }
 
     @Test
-    void shouldRemoveTask()throws Exception{
+    void shouldRemoveTask() throws Exception {
         //Given
-        Task task = new Task(1L,"Test","Test ");
+        Task task = new Task(1L, "Test", "Test ");
         when(service.getTask(1L)).thenReturn(Optional.of(task));
 
         //Then & Whe
         mockMvc
                 .perform(MockMvcRequestBuilders
-                .delete("/v1/task/removeTask")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .param("taskId","1"))
+                        .delete("/v1/task/removeTask")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .param("taskId", "1"))
                 .andExpect(MockMvcResultMatchers.status().is(200));
 
     }
